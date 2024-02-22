@@ -4,9 +4,12 @@
 
 1. Copy the `supermicro-x9` folder from this repo to the root of the drive.
 
+1. Boot to the FreeDOS USB you have created.
+
 1. List all megaraid controllers in your system
 
    ```dos
+   cd supermicro-x9
    megarec -adplist
    ```
 
