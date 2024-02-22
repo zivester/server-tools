@@ -1,86 +1,88 @@
 # Flashing SuperMicro X9 motherboards to LSI IT mode
 
-1. Boot to FreeDOS (Create one at https://rufus.ie)
+1. Create a FreeDOS bootable USB using (Create one at https://rufus.ie)
 
-2. List all megaraid controllers in your system
+1. Copy the `supermicro-x9` folder from this repo to the root of the drive.
 
-```dos
-megarec -adplist
-```
+1. List all megaraid controllers in your system
 
-3. Backup your SBR and SPD files in case you ever want to revert. Assuming you only have one sas controller `0` indicates the id from the `-adplist` command from #2. Name these files whatever you want. For me it made sense to name them after my motherboard model number `x9drl-7f`.
+   ```dos
+   megarec -adplist
+   ```
 
-```dos
-megarec -readsbr 0 x9drl-7f.sbr
-megarec -readspd 0 x9drl-7f.spd
-```
+1. Backup your SBR and SPD files in case you ever want to revert. Assuming you only have one sas controller `0` indicates the id from the `-adplist` command from #2. Name these files whatever you want. For me it made sense to name them after my motherboard model number `x9drl-7f`.
 
-The `readspd` failed on my motherboard with the following error.:
+   ```dos
+   megarec -readsbr 0 x9drl-7f.sbr
+   megarec -readspd 0 x9drl-7f.spd
+   ```
 
-```dos
-timeout
+   The second command `readspd` failed on my motherboard with the following error:
 
-SPD Read Failed.
-Error code = 16384
-```
+   ```dos
+   timeout
 
-I don't think this file is used even to revert to the original firmware, so ignore at your own risk (I did).
+   SPD Read Failed.
+   Error code = 16384
+   ```
 
-4. Backup all the info for your sas controller. We'll use this later to reset the SAS address.
+   I don't think this file is used even to revert to the original firmware, so ignore at your own risk (I did).
 
-```dos
-megascu -adpallinfo -a0 > x9drl-7f.txt
-```
+1. Backup all the info for your sas controller. We'll use this later to reset the SAS address.
 
-5. Now begins the flashing phase. Flash an empty sbr to the controller.
+   ```dos
+   megascu -adpallinfo -a0 > x9drl-7f.txt
+   ```
 
-```dos
-megarec -writesbr 0 sbrempty.bin
-```
+1. Now begins the flashing phase. Flash an empty sbr to the controller.
 
-This should be fairly instand and output `Success`
+   ```dos
+   megarec -writesbr 0 sbrempty.bin
+   ```
 
-6. Wipe the flash memory
+   This should be fairly instant and output `Success`
 
-```dos
-megarec -cleanflash 0
-```
+1. Wipe the flash memory
 
-This should take 5-10 seconds and output `Success`
+   ```dos
+   megarec -cleanflash 0
+   ```
 
-Ctrl+Alt+Delete (to reboot)
+   This should take 5-10 seconds and output `Success`
 
-7. Boot to UEFI Shell (motherboard should have this as a boot option). Mine was "UEFI: Built-in EFI Shell"
+   Ctrl+Alt+Delete (to reboot)
 
-8. See if you can now see the card.
+1. Boot to UEFI Shell (motherboard should have this as a boot option). Mine was "UEFI: Built-in EFI Shell"
 
-```uefi
-fs0:
-cd supermicro-x9
-sas2flash -list
-```
+1. See if you can now see the card.
 
-You should now see your card listed.
+   ```uefi
+   fs0:
+   cd supermicro-x9
+   sas2flash -list
+   ```
 
-9. Flash the IT firmware and the card BIOS
+   You should now see your card listed.
 
-```uefi
-sas2flash -o -f 9207-8.bin -b mptsas2.rom
-```
+1. Flash the IT firmware and the card BIOS
 
-10. Now look at the sas card again and you should see a card with all zeros for it's sas address
+   ```uefi
+   sas2flash -o -f 9207-8.bin -b mptsas2.rom
+   ```
 
-```uefi
-sas2flash -list
-```
+1. Now look at the sas card again and you should see a card with all zeros for it's sas address
 
-11. Set the SAS address to the one in the `.txt` file you created earlier
+   ```uefi
+   sas2flash -list
+   ```
 
-```uefi
-sas2flash -o -sasadd 5003048011838700
-```
+1. Set the SAS address to the one in the `.txt` file you created earlier
 
-You're done! Reboot your computer and you should now see an LSI bootrom instead of a MegaRaid one.
+   ```uefi
+   sas2flash -o -sasadd 5003048011838700
+   ```
+
+   You're done! Reboot your computer and you should now see an LSI bootrom instead of a MegaRaid one.
 
 ## Credits
 
