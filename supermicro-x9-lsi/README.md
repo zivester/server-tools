@@ -1,15 +1,35 @@
 # Flashing SuperMicro X9 motherboards to LSI IT mode
 
-1. Create a FreeDOS bootable USB using (Create one at https://rufus.ie)
+## Intro
 
-1. Copy the `supermicro-x9` folder from this repo to the root of the drive.
+This guide was created to help you flash a Supermicro X9 motherboard's onboard Broadcom 2208 MegaRaid controller into an LSI 9207 HBA (IT mode). According to [SuperMicro's X9 motherboards](https://www.supermicro.com/products/motherboard/archive/?mlg=0) this should work for the following motherboards:
+
+- [X9DAX-7F](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DAX-7F.cfm)
+- [X9DAX-7F-HFT](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DAX-7F-HFT.cfm)
+- [X9DAX-7TF](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DAX-7TF.cfm)
+- [X9DR7-TF+](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DR7-TF_.cfm)
+- [X9DRFF-7+](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRFF-7_.cfm)
+- [X9DRFF-7T+](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRFF-7T_.cfm)
+- [X9DRH-7F](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRH-7F.cfm)
+- [X9DRH-7TF](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRH-7TF.cfm)
+- [X9DRL-7F](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRL-7F.cfm)
+- [X9DRW-7TPF+](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRW-7TPF_.cfm)
+- [X9DRW-7TPF](https://www.supermicro.com/products/motherboard/Xeon/C600/X9DRW-7TPF.cfm)
+
+The bare minimum amount of files are inside of this directory to get you up and running.
+
+## How to Flash
+
+1. Create a FreeDOS/MSDOS bootable USB (Create one at https://rufus.ie)
+
+1. Copy the `supermicro-x9-lsi` folder from this repo to the root of the drive.
 
 1. Boot to the FreeDOS USB you have created.
 
 1. List all megaraid controllers in your system
 
    ```dos
-   cd supermicro-x9
+   cd supermicro-x9-lsi
    megarec -adplist
    ```
 
@@ -61,7 +81,7 @@
 
    ```uefi
    fs0:
-   cd supermicro-x9
+   cd supermicro-x9-lsi
    sas2flash -list
    ```
 
@@ -88,6 +108,8 @@
    You're done! Reboot your computer and you should now see an LSI bootrom instead of a MegaRaid one.
 
 ## Credits
+
+This guide created from pulling from the following sources:
 
 - https://mywiredhouse.net/blog/flashing-lsi-2208-firmware-use-hba/
 - https://forums.serverbuilds.net/t/flashing-sas2208-to-it-mode-when-sas2flsh-does-not-detect-it/2357
