@@ -33,7 +33,9 @@ The bare minimum amount of files are inside of this directory to get you up and 
    megarec -adplist
    ```
 
-1. Backup your SBR and SPD files in case you ever want to revert. Assuming you only have one sas controller `0` indicates the id from the `-adplist` command from #2. Name these files whatever you want. For me it made sense to name them after my motherboard model number `x9drl-7f`.
+   You should see a single Megaraid Controller listed with id `0`
+
+1. Backup your SBR and SPD files in case you ever want to revert. Assuming you only have one sas controller `0` indicates the id from the `-adplist` command from #4. Name these files whatever you want. For me it made sense to name them after my motherboard model number `x9drl-7f`.
 
    ```dos
    megarec -readsbr 0 x9drl-7f.sbr
@@ -92,6 +94,8 @@ The bare minimum amount of files are inside of this directory to get you up and 
    ```uefi
    sas2flash -o -f 9207-8.bin -b mptsas2.rom
    ```
+
+   This should take ~1 minute
 
 1. Now look at the sas card again and you should see a card with all zeros for it's sas address
 
